@@ -1,4 +1,4 @@
-import { TodoService } from "../service/todo.service";
+import { TodoService } from "../service/todo.service.js";
 
 export class TodoController {
   constructor() {
@@ -12,7 +12,8 @@ export class TodoController {
 
   async getAllTodos(req, res) {
     try {
-      const todos = await this.service.getTodos();
+      const userId = req.user.userId;
+      const todos = await this.service.getTodos(req.userId);
       return res.status(200).json(todos);
     } catch (error) {
       res.status(500).json({ message: error.message });
@@ -21,8 +22,9 @@ export class TodoController {
 
   async create(req, res) {
     try {
+      const userId = req.user.userId;
       const payload = {...req.body};
-      const newTodo = await this.service.createTodo(payload);
+      const newTodo = await this.service.createTodo(payload, userId);
       return res.status(201).json(newTodo);
     } catch (error) {
       res.status(500).json({ message: error.message });

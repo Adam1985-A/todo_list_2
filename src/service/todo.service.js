@@ -1,15 +1,18 @@
 import AppDataSource from "../database/data-source.js";  
-import { TodoEntity } from "../entity/todo.entity.js";
+import TodoEntity from "../entity/todo.entity.js";
 
 export class TodoService {
   constructor() {
     this.repository = AppDataSource.getRepository(TodoEntity);
   }
-  async getTodos() {
-    return this.repository.find();
+  async getTodos(userId) {
+    return this.repository.find({
+      where: {
+        user: {id: userId}}
+    });
   }
   async getTodoById(id) {
-    return this.repository.findOneBy({
+    return this.repository.findOne({
       where: {id: parseInt(id)} 
     });
 
@@ -20,8 +23,10 @@ export class TodoService {
 return todo;
   }
 
-  async createTodo(data) {
-    const todo = this.repository.create(payload);
+  async createTodo(payload, userId) {
+    const todo = this.repository.create({...payload, user: {id: userId}
+
+  });
     return await this.repository.save(todo);
   }
 
